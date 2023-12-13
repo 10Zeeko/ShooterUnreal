@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "InputConfigData.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -19,18 +20,19 @@ class SHOOTERUNREAL_API AFPSCharacter : public ACharacter
 public:
 	AFPSCharacter();
 
-public:	
 	virtual void Tick(float DeltaTime) override;
 
+	void MoveCallBack(const FInputActionValue& aValue);
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* mWeaponPoint;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputMappingContext* mInputMapping;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputConfigData* mInputData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

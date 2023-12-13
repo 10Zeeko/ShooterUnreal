@@ -6,9 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "InputConfigData.generated.h"
 
-/**
- * 
- */
+class UInputAction;
+
 UCLASS()
 class SHOOTERUNREAL_API UInputConfigData : public UDataAsset
 {

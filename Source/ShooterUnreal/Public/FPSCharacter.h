@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BPC_Weapon.h"
 #include "InputActionValue.h"
 #include "InputConfigData.h"
 #include "Camera/CameraComponent.h"
@@ -27,6 +28,8 @@ public:
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	UStaticMeshComponent* GetWeapon() const {return  mWeaponPoint; };
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* mWeaponPoint;
 
@@ -47,6 +50,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnClick evOnClick;
+	
+	UBPC_Weapon* mpWeaponEquipped;
 
 protected:
 	virtual void BeginPlay() override;
@@ -58,6 +63,6 @@ private:
 	void LookCallBack(const FInputActionValue& aValue);
 
 	void OnClickCallBack(const FInputActionValue& aValue);
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* mCamera;
 };

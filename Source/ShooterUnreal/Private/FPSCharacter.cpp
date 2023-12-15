@@ -25,6 +25,7 @@ AFPSCharacter::AFPSCharacter()
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	mWeaponPoint->AttachToComponent(GetMesh(), {EAttachmentRule::SnapToTarget, true}, FName(TEXT("WeaponPointSocket")));
 }
 
 // Called every frame
@@ -94,7 +95,7 @@ void AFPSCharacter::OnClickCallBack(const FInputActionValue& aValue)
 	{
 		mMoveSpeed += 10;
 		evOnClick.Broadcast();
-		UE_LOG(LogTemp, Warning, TEXT("Hola %d"), mMoveSpeed);
+		LogD("Hola");
 		if (GEngine != nullptr)
 		{
 			ScreenD(Format1("HOLADEBUG %d", mMoveSpeed));

@@ -25,13 +25,30 @@ AFPSCharacter::AFPSCharacter()
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+// Called to bind functionality to input
+void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	check(PlayerInputComponent);
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	UEnhancedInputLocalPlayerSubsystem* EInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+	EInputSubsystem->ClearAllMappings();
+	EInputSubsystem->AddMappingContext(mInputMapping, 0);
+
+	UEnhancedInputComponent* EInputComponent {Cast<UEnhancedInputComponent>(PlayerInputComponent)};
+	EInputComponent->BindAction(mInputData->InputMove, ETriggerEvent::Triggered, this, &AFPSCharacter::MoveCallBack);
+	EInputComponent->BindAction(mInputData->InputLook, ETriggerEvent::Triggered, this, &AFPSCharacter::LookCallBack);
+	EInputComponent->BindAction(mInputData->InputJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	EInputComponent->BindAction(mInputData->InputMouseClick, ETriggerEvent::Started, this, &AFPSCharacter::OnClickCallBack);
 }
 
 void AFPSCharacter::MoveCallBack(const FInputActionValue& aValue)
@@ -54,17 +71,33 @@ void AFPSCharacter::MoveCallBack(const FInputActionValue& aValue)
 	}
 }
 
-// Called to bind functionality to input
-void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AFPSCharacter::LookCallBack(const FInputActionValue& aValue)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	check(PlayerInputComponent);
+	if (IsValid(Controller))
+	{
+		const FVector2d LookValue {aValue.Get<FVector2d>()};
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	UEnhancedInputLocalPlayerSubsystem* EInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-	EInputSubsystem->ClearAllMappings();
-	EInputSubsystem->AddMappingContext(mInputMapping, 0);
+		if (LookValue.X != 0)
+		{
+			AddControllerYawInput(LookValue.X);
+		}
+		if (LookValue.Y != 0)
+		{
+			AddControllerPitchInput(LookValue.Y);
+		}
+	}
+}
 
-	UEnhancedInputComponent* EInputComponent {Cast<UEnhancedInputComponent>(PlayerInputComponent)};
-	EInputComponent->BindAction(mInputData->InputMove, ETriggerEvent::Triggered, this, &AFPSCharacter::MoveCallBack);
+void AFPSCharacter::OnClickCallBack(const FInputActionValue& aValue)
+{
+	if (IsValid(Controller))
+	{
+		mMoveSpeed += 10;
+		evOnClick.Broadcast();
+		UE_LOG(LogTemp, Warning, TEXT("Hola %d"), mMoveSpeed);
+		if (GEngine != nullptr)
+		{
+			ScreenD(Format1("HOLADEBUG %d", mMoveSpeed));
+		}
+	}
 }

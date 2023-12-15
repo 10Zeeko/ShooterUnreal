@@ -7,10 +7,13 @@
 #include "InputConfigData.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Utils.h"
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
 class UInputConfigData;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClick);
 
 UCLASS()
 class SHOOTERUNREAL_API AFPSCharacter : public ACharacter
@@ -21,10 +24,8 @@ public:
 	AFPSCharacter();
 
 	virtual void Tick(float DeltaTime) override;
-
-	void MoveCallBack(const FInputActionValue& aValue);
 	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* mWeaponPoint;
@@ -44,10 +45,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float mMaxHealth {100.f};
 
+	UPROPERTY(BlueprintAssignable)
+	FOnClick evOnClick;
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	
+	void MoveCallBack(const FInputActionValue& aValue);
+	
+	void LookCallBack(const FInputActionValue& aValue);
+
+	void OnClickCallBack(const FInputActionValue& aValue);
+	UPROPERTY(EditAnywhere)
 	UCameraComponent* mCamera;
 };

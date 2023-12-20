@@ -23,7 +23,7 @@ public:
 	void AttachWeapon(AFPSCharacter* apPlayerCharacter);
 
 	UFUNCTION(BlueprintCallable)
-	void OnFireCallback();
+	virtual void OnFireCallback();
 
 	UPROPERTY(EditDefaultsOnly)
 	UBillboardComponent* mpMuzzleOffset;

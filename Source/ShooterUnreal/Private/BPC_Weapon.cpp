@@ -3,6 +3,8 @@
 #include "FPSCharacter.h"
 #include "Utils.h"
 #include "Components/BillboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBPC_Weapon::UBPC_Weapon()
 {
@@ -25,7 +27,27 @@ void UBPC_Weapon::AttachWeapon(AFPSCharacter* apPlayerCharacter)
 
 void UBPC_Weapon::OnFireCallback()
 {
-	ScreenD(TEXT("A"));
+	if (!mpOwnerCharacter) return;
+	const UWorld* pWorld {GetWorld()};
+	if (pWorld == nullptr) return;
+
+	const UCameraComponent* PlayerCamera {mpOwnerCharacter->GetCamera()};
+
+	const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
+	const FVector StartLocation {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
+	const FVector EndLocation {StartLocation + UKismetMathLibrary::GetForwardVector(PlayerCamera->GetComponentRotation()) * mShootRange};
+
+	FCollisionQueryParams QueryParams {};
+	QueryParams.AddIgnoredActor(mpOwnerCharacter);
+	FHitResult HitResult {};
+	pWorld->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Camera, QueryParams);
+	DrawDebugLine(pWorld, StartLocation, EndLocation, HitResult.bBlockingHit ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
+
+	if (HitResult.bBlockingHit && IsValid(HitResult.GetActor()))
+	{
+		ScreenD(Format1("%s", *HitResult.GetActor()->GetName()));
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), mDamage, mpOwnerCharacter->GetController(), GetOwner(), {});
+	}
 }
 
 void UBPC_Weapon::BeginPlay()

@@ -29,6 +29,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UStaticMeshComponent* GetWeapon() const {return  mWeaponPoint; };
+	UCameraComponent* GetCamera() const {return  mCamera; };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* mWeaponPoint;

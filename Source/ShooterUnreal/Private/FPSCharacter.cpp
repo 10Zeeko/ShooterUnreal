@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -19,6 +20,13 @@ AFPSCharacter::AFPSCharacter()
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	mCamera->SetupAttachment(GetCapsuleComponent());
 	mCamera->bUsePawnControlRotation = true;
+
+	UCharacterMovementComponent* characterMovement {GetCharacterMovement()};
+	characterMovement->BrakingFriction = 10.0f;
+	characterMovement->MaxAcceleration = 10000.0f;
+	characterMovement->MaxWalkSpeed = 1000.0f;
+	characterMovement->JumpZVelocity = 600.0f;
+	characterMovement->AirControl = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -95,10 +103,5 @@ void AFPSCharacter::OnClickCallBack(const FInputActionValue& aValue)
 	{
 		mMoveSpeed += 10;
 		evOnClick.Broadcast();
-		LogD("Hola");
-		if (GEngine != nullptr)
-		{
-			ScreenD(Format1("HOLADEBUG %d", mMoveSpeed));
-		}
 	}
 }

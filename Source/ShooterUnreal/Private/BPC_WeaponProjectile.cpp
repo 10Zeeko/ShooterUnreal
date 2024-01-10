@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BillboardComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBPC_WeaponProjectile::UBPC_WeaponProjectile()
 {
@@ -25,14 +26,11 @@ void UBPC_WeaponProjectile::OnFireCallback()
 	{
 		const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
 		const FVector StartPosition {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
-		//Spawn parameters for the current spawn.
-		//We can use this for a number of options like disable collision or adjust the spawn position
-		//if a collision is happening in the spawn point etc..
+		const FVector EndLocation {StartPosition + UKismetMathLibrary::GetForwardVector(PlayerCamera->GetComponentRotation()) * mShootRange};
 		FActorSpawnParameters SpawnParams;
- 
 		//Actual Spawn. The following function returns a reference to the spawned actor
 		AProjectileBullet* ActorRef = GetWorld()->SpawnActor<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition), SpawnParams);
- 
+		ActorRef->apProjectileMovementComponent->Velocity = EndLocation;
 		GLog->Log("Spawned the UsefulActor.");
 	}
 }

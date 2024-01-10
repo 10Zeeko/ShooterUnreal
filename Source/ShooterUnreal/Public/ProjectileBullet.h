@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "ProjectileBullet.generated.h"
 
 UCLASS()
@@ -15,8 +16,10 @@ public:
 	AProjectileBullet();
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* apSphereComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UProjectileMovementComponent* apProjectileMovementComponent;
 	
 protected:
 	virtual void BeginPlay() override;

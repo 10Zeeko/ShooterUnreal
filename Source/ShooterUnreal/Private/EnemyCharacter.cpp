@@ -16,7 +16,6 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AEnemyCharacter::Tick(float DeltaTime)

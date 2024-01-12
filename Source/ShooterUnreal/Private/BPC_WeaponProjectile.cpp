@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BillboardComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UBPC_WeaponProjectile::UBPC_WeaponProjectile()
@@ -27,10 +28,15 @@ void UBPC_WeaponProjectile::OnFireCallback()
 		const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
 		const FVector StartPosition {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
 		const FVector EndLocation {StartPosition + UKismetMathLibrary::GetForwardVector(PlayerCamera->GetComponentRotation()) * mShootRange};
-		FActorSpawnParameters SpawnParams;
 		//Actual Spawn. The following function returns a reference to the spawned actor
-		AProjectileBullet* ActorRef = GetWorld()->SpawnActor<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition), SpawnParams);
-		ActorRef->apProjectileMovementComponent->Velocity = EndLocation;
+		AProjectileBullet* ActorRef = GetWorld()->SpawnActorDeferred<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition));
+		if (ActorRef)
+		{
+			ActorRef->apProjectileMovementComponent->Velocity = EndLocation;
+			ActorRef->mDamage = mDamage;
+			ActorRef->mpOwnerCharacter = mpOwnerCharacter;
+			UGameplayStatics::FinishSpawningActor(ActorRef, FTransform(StartPosition));
+		}
 		GLog->Log("Spawned the UsefulActor.");
 	}
 }

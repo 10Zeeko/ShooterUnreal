@@ -78,7 +78,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 	if (!mCurrentVelocity.IsZero())
 	{
-		mNewPosition = GetActorLocation() + mCurrentVelocity + DeltaTime;
+		mNewPosition = GetActorLocation() + mCurrentVelocity * DeltaTime;
 
 		if (mGoBackToBase)
 		{
@@ -89,13 +89,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			}
 			else
 			{
-				mCurrentVelocity = FVector::ZeroVector;
 				mDistanceSQRT = BIG_NUMBER;
 				mGoBackToBase = false;
 
 				SetNewRotation(GetActorForwardVector());
+				mCurrentVelocity = FVector::ZeroVector;
 			}
 		}
+		SetActorLocation(mNewPosition);
 	}
 }
 

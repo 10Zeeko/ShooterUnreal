@@ -25,14 +25,15 @@ void UBPC_WeaponProjectile::OnFireCallback()
 	//If the usefulactorbp is valid
 	if(aProjectileBulletBP)
 	{
+		const FRotator SpawnRotation = mpOwnerCharacter->GetControlRotation();
 		const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
 		const FVector StartPosition {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
-		const FVector EndLocation {StartPosition + UKismetMathLibrary::GetForwardVector(PlayerCamera->GetComponentRotation()) * mShootRange};
 		//Actual Spawn. The following function returns a reference to the spawned actor
 		AProjectileBullet* ActorRef = GetWorld()->SpawnActorDeferred<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition));
+		
 		if (ActorRef)
 		{
-			ActorRef->apProjectileMovementComponent->Velocity = EndLocation;
+			ActorRef->SetActorRotation(SpawnRotation);
 			ActorRef->mDamage = mDamage;
 			ActorRef->mpOwnerCharacter = mpOwnerCharacter;
 			UGameplayStatics::FinishSpawningActor(ActorRef, FTransform(StartPosition));

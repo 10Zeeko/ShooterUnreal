@@ -4,6 +4,7 @@
 #include "FPSCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "TutorialAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -34,12 +35,18 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	mWeaponPoint->AttachToComponent(GetMesh(), {EAttachmentRule::SnapToTarget, true}, FName(TEXT("WeaponPointSocket")));
+	mAnimInstance = Cast<UTutorialAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
 // Called every frame
 void AFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FRotator tmp = FRotator(0, FMath::ClampAngle(GetControlRotation().Yaw - GetActorRotation().Yaw, -179.9, 180), 0 - GetControlRotation().Pitch);
+	if (mAnimInstance)
+	{
+		mAnimInstance->mRotation = tmp;
+	}
 }
 
 // Called to bind functionality to input

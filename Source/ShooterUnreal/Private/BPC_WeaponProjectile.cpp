@@ -27,9 +27,9 @@ void UBPC_WeaponProjectile::OnFireCallback()
 	{
 		const FRotator SpawnRotation = mpOwnerCharacter->GetControlRotation();
 		const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
-		const FVector StartPosition {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
+		const FVector StartPosition {FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y + 50.0f, GetOwner()->GetActorLocation().Z)};
 		//Actual Spawn. The following function returns a reference to the spawned actor
-		AProjectileBullet* ActorRef = GetWorld()->SpawnActorDeferred<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition));
+		AProjectileBullet* ActorRef = GetWorld()->SpawnActorDeferred<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition), mpOwnerCharacter, mpOwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		
 		if (ActorRef)
 		{
@@ -37,6 +37,9 @@ void UBPC_WeaponProjectile::OnFireCallback()
 			ActorRef->mDamage = mDamage;
 			ActorRef->mpOwnerCharacter = mpOwnerCharacter;
 			UGameplayStatics::FinishSpawningActor(ActorRef, FTransform(StartPosition));
+			// FCollisionResponseContainer Coll;
+			// Coll.SetResponse(ECC_Pawn, ECR_Ignore);
+			// ActorRef->apSphereComponent->BodyInstance.SetResponseToChannels(Coll);
 		}
 		GLog->Log("Spawned the UsefulActor.");
 	}

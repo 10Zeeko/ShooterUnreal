@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Utils.h"
+#include "TutorialAnimInstance.h"
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -66,4 +67,7 @@ private:
 	void OnClickCallBack(const FInputActionValue& aValue);
 	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* mCamera;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UTutorialAnimInstance* mAnimInstance;
 };

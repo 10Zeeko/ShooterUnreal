@@ -36,5 +36,9 @@ void AProjectileBullet::BeginOverlapCallback(UPrimitiveComponent* OverlappedComp
 void AProjectileBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (GetActorLocation().Z <= 0)
+	{
+		Destroy();
+	}
 }
 

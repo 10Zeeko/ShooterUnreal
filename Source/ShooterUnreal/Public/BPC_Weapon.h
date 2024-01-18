@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Utils.h"
 #include "BPC_Weapon.generated.h"
 
 class AFPSCharacter;
@@ -20,7 +21,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void AttachWeapon(AFPSCharacter* apPlayerCharacter);
+	virtual void AttachWeapon(AFPSCharacter* apPlayerCharacter);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnFireCallback();

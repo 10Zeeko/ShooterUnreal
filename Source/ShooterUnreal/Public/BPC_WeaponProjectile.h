@@ -21,4 +21,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,Category="ActorSpawning")
 	TSubclassOf<AProjectileBullet> aProjectileBulletBP;
+
+	virtual void AttachWeapon(AFPSCharacter* apPlayerCharacter) override;
+
+protected:
+	virtual void BeginPlay() override;
 };

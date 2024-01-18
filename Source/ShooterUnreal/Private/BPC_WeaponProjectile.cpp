@@ -7,6 +7,7 @@
 #include "Components/BillboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Math/TransformCalculus3D.h"
 
 UBPC_WeaponProjectile::UBPC_WeaponProjectile()
 {
@@ -27,7 +28,7 @@ void UBPC_WeaponProjectile::OnFireCallback()
 	{
 		const FRotator SpawnRotation = mpOwnerCharacter->GetControlRotation();
 		const FRotator CameraRotation {PlayerCamera->GetComponentRotation()};
-		const FVector StartPosition {FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y + 50.0f, GetOwner()->GetActorLocation().Z)};
+		const FVector StartPosition {GetOwner()->GetActorLocation() + CameraRotation.RotateVector(mpMuzzleOffset->GetComponentLocation())};
 		//Actual Spawn. The following function returns a reference to the spawned actor
 		AProjectileBullet* ActorRef = GetWorld()->SpawnActorDeferred<AProjectileBullet>(aProjectileBulletBP, FTransform(StartPosition), mpOwnerCharacter, mpOwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		
@@ -37,10 +38,18 @@ void UBPC_WeaponProjectile::OnFireCallback()
 			ActorRef->mDamage = mDamage;
 			ActorRef->mpOwnerCharacter = mpOwnerCharacter;
 			UGameplayStatics::FinishSpawningActor(ActorRef, FTransform(StartPosition));
-			// FCollisionResponseContainer Coll;
-			// Coll.SetResponse(ECC_Pawn, ECR_Ignore);
-			// ActorRef->apSphereComponent->BodyInstance.SetResponseToChannels(Coll);
 		}
 		GLog->Log("Spawned the UsefulActor.");
 	}
+}
+
+void UBPC_WeaponProjectile::AttachWeapon(AFPSCharacter* apPlayerCharacter)
+{
+	Super::AttachWeapon(apPlayerCharacter);
+}
+
+void UBPC_WeaponProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	mpMuzzleOffset->SetRelativeLocation(FVector(80, 0, 0));
 }
